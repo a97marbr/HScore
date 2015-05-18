@@ -17,7 +17,7 @@ CREATE TABLE blacklist (
   PRIMARY KEY (`bid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO score (blacklist) values ("kuk");
-INSERT INTO score (blacklist) values ("k*k");
+INSERT INTO blacklist (word) values ("kuk");
+INSERT INTO blacklist (word) values ("k*k");
 #INSERT INTO score (score, player, scoredate) values (1500, "TST", NOW());
 
