@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Highscore.js - testpage</title>
+<script type="text/javascript" src="Highscore.js"></script>
+<script type="text/javascript">
+	function updateHighscore() {
+		document.getElementById('highscore').innerHTML="<p>Placeholder for highscore table</p>";
+	}
+</script>
+</head>
+<body onload="updateHighscore();">
+	<label>Player Name:<input id="player" type="text" value="AAA" maxlength="3" /></label> <label>Player Name:<input id="score" type="text" value="500" /></label><button onclick="submitScore(document.getElementById('player').value, document.getElementById('score').value);">Submit score</button>
+	<div id="highscore"></div>
+</body>
+</html>
