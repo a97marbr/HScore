@@ -21,7 +21,7 @@ if (isset($_POST['params']) && !empty($_POST['params'])) {
 	$params = null;
 }
 
-array_push($debug, $params);
+//array_push($debug, $params);
 
 $p = $params["player"];
 $s = $params["score"];
@@ -33,24 +33,25 @@ addScore($p, $s);
 getHighscore("D");
 
 /*
- * Check if player name is too long, if so, crop
  * Check if player name is not in blacklist of names
  * If so - rename to 'UNK'
  */
 function checkPlayerName(&$p){
+	global $pdo;
+	global $debug;
+	$sql = "SELECT COUNT(*) as blacklisted FROM blacklist WHERE word='$p'";
 
-	$blacklist = array("kuk");
+	$pdo -> setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+	$sth = $pdo -> prepare($sql);
+	$sth -> execute();
+	$res = $sth -> fetchAll();
 
-	if (strlen($p)>3){
-		$p = substr ( $p , 0 , 3);
+	//array_push($debug, $res[0]);
+
+	// We found inappropriate name
+	if ($res[0]["blacklisted"] > 0) {
+    	$p = "UNK";
 	}
-
-	$tmp = $p;
-
-	if (in_array(strtolower($tmp), $blacklist)) {
-    $p = "UNK";
-	}
-
 }
 
 
@@ -63,7 +64,7 @@ function addScore($name, $score)
 
 	global $pdo;
 	global $sql;
-	$sql = "INSERT INTO score (player, score, date) VALUES('". $name ."'," .$score. ', NOW());';
+	$sql = "INSERT INTO score (player, score, scoredate) VALUES('". $name ."'," .$score. ', NOW());';
 
 	//array_push($debug, $sql);
 
@@ -73,8 +74,6 @@ function addScore($name, $score)
 		$sth = $pdo -> prepare($sql);
 		$sth -> execute();
 		$res = $sth -> fetchAll();
-		
-		
 	}
 
 
@@ -93,7 +92,7 @@ function getHighscore($highscoreType)
 	global $data;
 
 	if ($highscoreType == "D"){
-		$sql = "select player, score from score WHERE DATE(date) = DATE(NOW()) ORDER BY score DESC LIMIT 3;";	
+		$sql = "select player, score from score WHERE DATE(scoredate) = DATE(NOW()) ORDER BY score DESC LIMIT 3;";	
 	} else {
 		$sql = "select player, score from score ORDER BY score DESC LIMIT 3;";
 
